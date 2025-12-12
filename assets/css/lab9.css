@@ -1,0 +1,104 @@
+/*******************************
+  LAB 9 – Custom Overrides
+********************************/
+
+/* 1) Typography */
+:root{
+  --font-heading: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  --font-body: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+
+  --space-1: .5rem;
+  --space-2: 1rem;
+  --space-3: 1.5rem;
+  --space-4: 2.5rem;
+}
+
+body{ font-family: var(--font-body); }
+
+h1,h2,h3{
+  font-family: var(--font-heading);
+  letter-spacing: -0.02em;
+}
+h1{ font-size: clamp(2.2rem, 3vw, 3.2rem); line-height: 1.1; font-weight: 800; }
+h2{ font-size: clamp(1.7rem, 2.2vw, 2.4rem); line-height: 1.2; font-weight: 750; }
+h3{ font-size: 1.35rem; line-height: 1.25; font-weight: 700; }
+p{ font-size: 1rem; line-height: 1.75; letter-spacing: 0.01em; }
+
+/* 2) Links + Buttons */
+a{ color:#2563eb; text-decoration:none; text-underline-offset:3px; }
+a:hover{ color:#1d4ed8; text-decoration:underline; }
+a:active{ color:#1e40af; }
+
+.btn, button, input[type="submit"], .btn-get-started{
+  border-radius: 12px !important;
+  padding: 10px 16px !important;
+  font-weight: 700 !important;
+  transition: transform .12s ease, box-shadow .12s ease, background-color .12s ease;
+}
+.btn:hover, button:hover, .btn-get-started:hover{
+  transform: translateY(-1px);
+  box-shadow: 0 10px 22px rgba(0,0,0,.12);
+}
+.btn:active, button:active, .btn-get-started:active{
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+/* 3) Spacing + “Card” surfaces (applies to multiple sections) */
+section{ padding-block: var(--space-4) !important; }
+
+/* ✅ THIS LINE AFFECTS YOUR RESUME ITEMS */
+#resume .resume-item{
+  padding: var(--space-3) !important;
+  border: 1px solid rgba(0,0,0,.08);
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.06);
+  background: rgba(255,255,255,.75);
+  margin-bottom: var(--space-3);
+}
+
+/* also cards in other sections */
+#about .content,
+#portfolio .portfolio-wrap,
+#contact .info-item{
+  padding: var(--space-3) !important;
+  border: 1px solid rgba(0,0,0,.08);
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.06);
+  background: rgba(255,255,255,.75);
+  margin-bottom: var(--space-3);
+}
+
+/* 4) Two components: Navbar + Back-to-top */
+#header, .header, .navbar.header{
+  backdrop-filter: blur(10px);
+  background: rgba(255,255,255,.75) !important;
+  border-bottom: 1px solid rgba(0,0,0,.08);
+}
+
+.navbar a, .navmenu a{
+  padding: 10px 14px !important;
+  border-radius: 10px;
+}
+.navbar a:hover, .navmenu a:hover{
+  background: rgba(37,99,235,.12);
+}
+
+.back-to-top{
+  width: 44px !important;
+  height: 44px !important;
+  border-radius: 14px !important;
+  box-shadow: 0 12px 30px rgba(0,0,0,.18);
+}
+.back-to-top:hover{ transform: translateY(-2px); }
+
+/* SnapFolio Resume fallback */
+#resume div[class*="resume"]{
+  padding: 1.5rem;
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,.1);
+  box-shadow: 0 10px 30px rgba(0,0,0,.25);
+  margin-bottom: 1.5rem;
+}
+
+
