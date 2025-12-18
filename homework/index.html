@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Smart Thermometer UI</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <main class="app">
+    <h1>Smart Thermometer</h1>
+
+    <div class="box">
+      <p class="temp">Temperature: <span id="temp">22</span>°C</p>
+
+      <input type="range" min="-10" max="50" value="22" id="slider">
+
+      <div class="buttons">
+        <button id="cool">Cold</button>
+        <button id="normal">Normal</button>
+        <button id="hot">Hot</button>
+      </div>
+
+      <p id="status">Status: Normal</p>
+      <ul id="log"></ul>
+    </div>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
