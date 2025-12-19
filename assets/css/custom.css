@@ -121,9 +121,12 @@
 
 .memory-board{
   display: grid;
-  gap: 12px;
-  grid-template-columns: repeat(4, minmax(0, 1fr)); /* Easy */
+  gap: 8px;              /* smaller spacing */
+  max-width: 700px;      /* ↓ LOWER this to make cards smaller */
+  margin: 0 auto;        /* keep centered */
+  grid-template-columns: repeat(4, minmax(0, 1fr));
 }
+
 
 .memory-board.hard{
   grid-template-columns: repeat(6, minmax(0, 1fr)); /* Hard */
