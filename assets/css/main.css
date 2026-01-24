@@ -836,6 +836,56 @@ section,
   }
 }
 
+/* Hero buttons – pill style */
+.hero-actions {
+  display: flex;
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.hero-actions .btn {
+  padding: 12px 28px;
+  border-radius: 999px; /* pill shape */
+  font-weight: 600;
+  font-size: 15px;
+  letter-spacing: 0.3px;
+  transition: all 0.3s ease;
+}
+
+/* Primary (white filled) */
+.hero-actions .btn-primary {
+  background: #ffffff;
+  color: #111;
+  border: none;
+}
+
+.hero-actions .btn-primary:hover {
+  background: #f0f0f0;
+  color: #000;
+  transform: translateY(-2px);
+}
+
+/* Outline (transparent with white border) */
+.hero-actions .btn-outline {
+  background: transparent;
+  color: #ffffff;
+  border: 2px solid rgba(255, 255, 255, 0.8);
+}
+
+.hero-actions .btn-outline:hover {
+  background: #ffffff;
+  color: #111;
+  border-color: #ffffff;
+  transform: translateY(-2px);
+}
+
+@media (max-width: 576px) {
+  .hero-actions {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
 /*--------------------------------------------------------------
 # About Section
 --------------------------------------------------------------*/
@@ -2541,6 +2591,234 @@ section,
     margin-top: 30px;
   }
 }
+
+/* Responsive YouTube embed (fixes missing thumbnail / zero height issues) */
+.yt-embed {
+  position: relative;
+  width: 100%;
+  padding-top: 56.25%; /* 16:9 */
+  overflow: hidden;
+  border-radius: 12px; /* optional */
+}
+
+.yt-embed iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  z-index: 2;
+}
+
+/*--------------------------------------------------------------
+Game Starter Section
+
+--------------------------------------------------------------*/
+
+/* =========================
+   Memory Game (CV Section)
+   ========================= */
+/* =========================
+   Memory Game (CV Section)
+   ========================= */
+.memory-panel {
+  background: color-mix(in srgb, #fff, transparent 0%);
+  border: 1px solid color-mix(in srgb, currentColor, transparent 90%);
+  border-radius: 14px;
+  padding: 18px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+}
+
+.mg-label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.mg-select {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid color-mix(in srgb, currentColor, transparent 85%);
+  background: transparent;
+  color: inherit;
+  outline: none;
+  margin-bottom: 14px;
+}
+
+.mg-buttons .btn {
+  border-radius: 12px;
+}
+
+.memory-stats {
+  margin-top: 12px;
+}
+
+.mg-stat {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+}
+
+.mg-stat-label {
+  opacity: 0.8;
+  font-weight: 600;
+}
+
+.mg-stat-value {
+  font-weight: 800;
+  letter-spacing: 0.3px;
+}
+
+.mg-divider {
+  opacity: 0.2;
+  margin: 12px 0;
+}
+
+.mg-best-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+}
+
+.mg-best-label {
+  opacity: 0.8;
+  font-weight: 600;
+}
+
+.mg-best-value {
+  font-weight: 700;
+}
+
+.mg-message {
+  margin-top: 14px;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px dashed color-mix(in srgb, currentColor, transparent 75%);
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-weight: 700;
+}
+
+.memory-board-wrap {
+  background: color-mix(in srgb, #fff, transparent 0%);
+  border: 1px solid color-mix(in srgb, currentColor, transparent 90%);
+  border-radius: 14px;
+  padding: 18px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+}
+
+.mg-board {
+  display: grid;
+  gap: 12px;
+}
+
+/* responsive grid sizing controlled via JS using CSS variables */
+.mg-board {
+  grid-template-columns: repeat(var(--mg-cols, 4), minmax(0, 1fr));
+}
+
+/* Card */
+.mg-card {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  perspective: 900px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.mg-card[aria-disabled="true"] {
+  cursor: default;
+  opacity: 0.95;
+}
+
+.mg-card-inner {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 280ms ease;
+  border-radius: 14px;
+}
+
+.mg-card.is-flipped .mg-card-inner,
+.mg-card.is-matched .mg-card-inner {
+  transform: rotateY(180deg);
+}
+
+.mg-face {
+  position: absolute;
+  inset: 0;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backface-visibility: hidden;
+  border: 1px solid color-mix(in srgb, currentColor, transparent 85%);
+}
+
+.mg-front {
+  background: color-mix(in srgb, currentColor, transparent 92%);
+}
+
+.mg-front::after {
+  content: "★";
+  font-size: 26px;
+  opacity: 0.55;
+}
+
+.mg-back {
+  transform: rotateY(180deg);
+  background: color-mix(in srgb, #fff, transparent 0%);
+  font-size: clamp(20px, 3vw, 34px);
+  font-weight: 800;
+}
+
+/* keep cards comfortable on small screens */
+@media (max-width: 575px) {
+  .memory-board-wrap {
+    padding: 12px;
+  }
+  .mg-board {
+    gap: 10px;
+  }
+}
+
+
+/* FIX: Make Memory Game panel text visible on light cards */
+#memory-game .memory-panel,
+#memory-game .memory-board-wrap {
+  color: #111; /* override inherited white text */
+}
+
+/* Ensure form controls look correct */
+#memory-game .mg-select {
+  background: #fff;
+  color: #111;
+}
+
+#memory-game .mg-label,
+#memory-game .mg-stat-label,
+#memory-game .mg-best-label {
+  color: #111;
+}
+
+#memory-game .mg-stat-value,
+#memory-game .mg-best-value,
+#memory-game #mg-message {
+  color: #111;
+}
+
+/* Optional: make divider visible on white background */
+#memory-game .mg-divider {
+  border-color: rgba(0, 0, 0, 0.15);
+}
+
+
 
 /*--------------------------------------------------------------
 # Starter Section Section
