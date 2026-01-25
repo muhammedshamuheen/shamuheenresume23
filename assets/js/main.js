@@ -642,3 +642,309 @@
 /* =========================
  End of Memory Game (Flip Cards)
  ========================= */
+
+
+/* =========================
+ Smart Thermometer Section
+ ========================= */
+(() => {
+  const tempEl = document.getElementById("tTemp");
+  const humEl = document.getElementById("tHum");
+  const feelsEl = document.getElementById("tFeels");
+  const statusEl = document.getElementById("tStatus");
+
+  const modeEl = document.getElementById("tMode");
+  const manualTemp = document.getElementById("tManualTemp");
+  const manualHum = document.getElementById("tManualHum");
+  const manualTempLabel = document.getElementById("tManualTempLabel");
+  const manualHumLabel = document.getElementById("tManualHumLabel");
+
+  const minTemp = document.getElementById("tMin");
+  const maxTemp = document.getElementById("tMax");
+  const minLabel = document.getElementById("tMinLabel");
+  const maxLabel = document.getElementById("tMaxLabel");
+
+  const scaleMin = document.getElementById("tMinScale");
+  const scaleMax = document.getElementById("tMaxScale");
+
+  const unitC = document.getElementById("tuC");
+  const unitF = document.getElementById("tuF");
+
+  const gaugeFill = document.getElementById("tGaugeFill");
+  const gaugeMarker = document.getElementById("tGaugeMarker");
+  const trendEl = document.getElementById("tTrend");
+  const alertBox = document.getElementById("tAlertBox");
+  const soundEl = document.getElementById("tSound");
+
+  const startBtn = document.getElementById("tStart");
+  const stopBtn = document.getElementById("tStop");
+  const resetBtn = document.getElementById("tReset");
+
+  const canvas = document.getElementById("tCanvas");
+  if (!tempEl || !canvas) return;
+  const ctx = canvas.getContext("2d");
+
+  let unit = "C";
+  let running = false;
+  let timer = null;
+
+  let currentC = 22.2;
+  let currentHum = 45;
+
+  let series = [];
+  const MAX_POINTS = 60;
+
+  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+  const round1 = (v) => Math.round(v * 10) / 10;
+  const cToF = (c) => c * 9 / 5 + 32;
+
+  const displayTemp = (c) => (unit === "C" ? `${round1(c)}°C` : `${round1(cToF(c))}°F`);
+
+  function beep() {
+    if (!soundEl.checked) return;
+    try {
+      const ac = new (window.AudioContext || window.webkitAudioContext)();
+      const o = ac.createOscillator();
+      const g = ac.createGain();
+      o.type = "sine";
+      o.frequency.value = 880;
+      g.gain.value = 0.04;
+      o.connect(g);
+      g.connect(ac.destination);
+      o.start();
+      setTimeout(() => {
+        o.stop();
+        ac.close();
+      }, 120);
+    } catch { }
+  }
+
+  function feelsLike(c, h) {
+    const adj = (h - 50) / 40; // -1..+1 approx
+    return c + adj * 1.2;
+  }
+
+  function updateGauge(c) {
+    const pct = clamp((c - 0) / 50, 0, 1) * 100;
+    gaugeFill.style.width = `${pct}%`;
+    gaugeMarker.style.left = `calc(14px + (100% - 28px) * ${pct / 100})`;
+  }
+
+  function updateLabels() {
+    if (unit === "C") {
+      scaleMin.textContent = "0°C";
+      scaleMax.textContent = "50°C";
+      manualTempLabel.textContent = `${round1(parseFloat(manualTemp.value))}°C`;
+      minLabel.textContent = `${round1(parseFloat(minTemp.value))}°C`;
+      maxLabel.textContent = `${round1(parseFloat(maxTemp.value))}°C`;
+    } else {
+      scaleMin.textContent = "32°F";
+      scaleMax.textContent = "122°F";
+      manualTempLabel.textContent = `${round1(cToF(parseFloat(manualTemp.value)))}°F`;
+      minLabel.textContent = `${round1(cToF(parseFloat(minTemp.value)))}°F`;
+      maxLabel.textContent = `${round1(cToF(parseFloat(maxTemp.value)))}°F`;
+    }
+  }
+
+  function setUnit(next) {
+    unit = next;
+    unitC.classList.toggle("is-active", unit === "C");
+    unitF.classList.toggle("is-active", unit === "F");
+    updateLabels();
+    render();
+  }
+
+  function pushPoint(c) {
+    series.push(c);
+    if (series.length > MAX_POINTS) series.shift();
+  }
+
+  function updateTrend() {
+    if (series.length < 6) {
+      trendEl.textContent = "Waiting for data…";
+      return;
+    }
+    const a = series[series.length - 1];
+    const b = series[series.length - 6];
+    const diff = round1(a - b);
+    if (diff > 0.2) trendEl.textContent = `Rising (+${diff}°C)`;
+    else if (diff < -0.2) trendEl.textContent = `Falling (${diff}°C)`;
+    else trendEl.textContent = "Stable";
+  }
+
+  function drawChart() {
+    const dpr = window.devicePixelRatio || 1;
+    const cssW = canvas.clientWidth;
+    const cssH = canvas.clientHeight;
+    canvas.width = Math.round(cssW * dpr);
+    canvas.height = Math.round(cssH * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    const w = cssW;
+    const h = cssH;
+
+    ctx.clearRect(0, 0, w, h);
+
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = "rgba(0,0,0,0.10)";
+    ctx.strokeRect(0.5, 0.5, w - 1, h - 1);
+
+    if (series.length < 2) return;
+
+    const minC = Math.min(...series);
+    const maxC = Math.max(...series);
+    const pad = 1.0;
+    const lo = minC - pad;
+    const hi = maxC + pad;
+
+    const toX = (i) => (i / (MAX_POINTS - 1)) * (w - 14) + 7;
+    const toY = (c) => {
+      const t = (c - lo) / (hi - lo || 1);
+      return h - (t * (h - 16) + 8);
+    };
+
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = "rgba(96,165,250,0.95)";
+    ctx.beginPath();
+    series.forEach((c, i) => {
+      const x = toX(i);
+      const y = toY(c);
+      if (i === 0) ctx.moveTo(x, y);
+      else ctx.lineTo(x, y);
+    });
+    ctx.stroke();
+
+    const last = series[series.length - 1];
+    ctx.fillStyle = "rgba(52,211,153,0.95)";
+    ctx.beginPath();
+    ctx.arc(toX(series.length - 1), toY(last), 3.2, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  function checkAlerts(c) {
+    const min = parseFloat(minTemp.value);
+    const max = parseFloat(maxTemp.value);
+
+    if (c < min) {
+      alertBox.textContent = `❄ Too cold! Below minimum (${displayTemp(min)}).`;
+      alertBox.style.borderColor = "rgba(96,165,250,0.5)";
+      alertBox.style.background = "rgba(96,165,250,0.08)";
+      beep();
+      return;
+    }
+
+    if (c > max) {
+      alertBox.textContent = `🔥 Too hot! Above maximum (${displayTemp(max)}).`;
+      alertBox.style.borderColor = "rgba(239,68,68,0.45)";
+      alertBox.style.background = "rgba(239,68,68,0.08)";
+      beep();
+      return;
+    }
+
+    alertBox.textContent = "No alerts. Temperature is normal.";
+    alertBox.style.borderColor = "rgba(0,0,0,0.22)";
+    alertBox.style.background = "rgba(0,0,0,0.02)";
+  }
+
+  function render() {
+    tempEl.textContent = displayTemp(currentC);
+    humEl.textContent = `${Math.round(currentHum)}%`;
+    feelsEl.textContent = displayTemp(feelsLike(currentC, currentHum));
+    updateGauge(currentC);
+    checkAlerts(currentC);
+    updateTrend();
+    drawChart();
+  }
+
+  function tick() {
+    if (modeEl.value === "manual") {
+      currentC = parseFloat(manualTemp.value);
+      currentHum = parseFloat(manualHum.value);
+    } else {
+      currentC = clamp(currentC + (Math.random() - 0.5) * 0.45, 0, 50);
+      currentHum = clamp(currentHum + (Math.random() - 0.5) * 1.8, 10, 90);
+    }
+
+    pushPoint(currentC);
+    render();
+  }
+
+  function setRunning(on) {
+    running = on;
+    startBtn.disabled = on;
+    stopBtn.disabled = !on;
+    statusEl.textContent = on ? "Running" : "Idle";
+
+    if (on) {
+      if (!timer) timer = setInterval(tick, 1000);
+      tick();
+      return;
+    }
+
+    if (timer) clearInterval(timer);
+    timer = null;
+  }
+
+  function resetAll() {
+    setRunning(false);
+    currentC = 22.2;
+    currentHum = 45;
+    series = [];
+
+    manualTemp.value = "22";
+    manualHum.value = "45";
+    minTemp.value = "18";
+    maxTemp.value = "26";
+
+    manualHumLabel.textContent = "45%";
+    updateLabels();
+
+    trendEl.textContent = "Waiting for data…";
+    alertBox.textContent = "No alerts. Temperature is normal.";
+    alertBox.style.borderColor = "rgba(0,0,0,0.22)";
+    alertBox.style.background = "rgba(0,0,0,0.02)";
+
+    render();
+  }
+
+  // Events
+  unitC.addEventListener("click", () => setUnit("C"));
+  unitF.addEventListener("click", () => setUnit("F"));
+
+  modeEl.addEventListener("change", () => {
+    const manual = modeEl.value === "manual";
+    manualTemp.disabled = !manual;
+    manualHum.disabled = !manual;
+    statusEl.textContent = running ? "Running" : "Idle";
+  });
+
+  manualTemp.addEventListener("input", () => updateLabels());
+  manualHum.addEventListener("input", () => {
+    manualHumLabel.textContent = `${Math.round(parseFloat(manualHum.value))}%`;
+  });
+
+  minTemp.addEventListener("input", () => {
+    if (parseFloat(minTemp.value) > parseFloat(maxTemp.value)) minTemp.value = maxTemp.value;
+    updateLabels();
+    render();
+  });
+
+  maxTemp.addEventListener("input", () => {
+    if (parseFloat(maxTemp.value) < parseFloat(minTemp.value)) maxTemp.value = minTemp.value;
+    updateLabels();
+    render();
+  });
+
+  startBtn.addEventListener("click", () => setRunning(true));
+  stopBtn.addEventListener("click", () => setRunning(false));
+  resetBtn.addEventListener("click", () => resetAll());
+
+  window.addEventListener("resize", () => drawChart());
+
+  // Init
+  setUnit("C");
+  resetAll();
+})();
+/* =========================
+ End of Smart Thermometer Section
+ ========================= */

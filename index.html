@@ -90,11 +90,16 @@
               >
             </li>
             <li>
+              <a href="#thermometer"
+                ><i class="bi bi-grid-3x3-gap navicon"></i> Smart Thermometer</a
+              >
+            </li>
+            <li>
               <a href="#memory-game"
                 ><i class="bi bi-grid-3x3-gap navicon"></i> Memory Game</a
               >
             </li>
-            <li class="dropdown">
+            <!-- <li class="dropdown">
               <a href="#"
                 ><i class="bi bi-menu-button navicon"></i> <span>Dropdown</span>
                 <i class="bi bi-chevron-down toggle-dropdown"></i
@@ -118,7 +123,7 @@
                 <li><a href="#">Dropdown 3</a></li>
                 <li><a href="#">Dropdown 4</a></li>
               </ul>
-            </li>
+            </li> -->
             <li>
               <a href="#contact"
                 ><i class="bi bi-envelope navicon"></i> Contact</a
@@ -164,7 +169,7 @@
                     Let's bring your vision to life.
                   </p>
 
-                  <div class="hero-actions">
+                  <div class="hero-actions btn">
                     <a href="#portfolio" class="btn btn-primary"
                       >View My Work</a
                     >
@@ -172,8 +177,8 @@
                   </div>
 
                   <div class="social-links">
-                    <a href="#"><i class="bi bi-dribbble"></i></a>
-                    <a href="#"><i class="bi bi-behance"></i></a>
+                    <a href="#"><i class="bi bi-facebook"></i></a>
+                    <a href="#"><i class="bi bi-instagram"></i></a>
                     <a href="#"><i class="bi bi-github"></i></a>
                     <a href="#"><i class="bi bi-linkedin"></i></a>
                   </div>
@@ -888,7 +893,7 @@
                 <div class="mb-3">
                   <div class="yt-embed mb-3">
                     <iframe
-                      src="https://www.youtube.com/watch?v=bcZhUt7l48w"
+                      src="https://www.youtube.com/embed/Zheks4f_afI"
                       title="YouTube video player"
                       allow="
                         accelerometer;
@@ -1113,6 +1118,217 @@
         </div>
       </section>
       <!-- /Testimonials Section -->
+
+      <!-- Smart Thermometer Section -->
+      <section id="thermometer" class="thermometer section">
+        <div class="container section-title" data-aos="fade-up">
+          <h2>Smart Thermometer</h2>
+          <p>
+            A simple UI simulator showing live temperature & humidity, alerts,
+            and a small chart.
+          </p>
+        </div>
+
+        <div class="container" data-aos="fade-up" data-aos-delay="100">
+          <div class="row g-4 align-items-start">
+            <!-- Controls -->
+            <div class="col-lg-4">
+              <div class="thermo-panel">
+                <div class="thermo-head">
+                  <div>
+                    <div class="thermo-title">Controls</div>
+                    <div class="thermo-sub">
+                      Switch mode, set limits, and start.
+                    </div>
+                  </div>
+
+                  <div class="thermo-units" role="group" aria-label="Units">
+                    <button type="button" class="tu-btn is-active" id="tuC">
+                      °C
+                    </button>
+                    <button type="button" class="tu-btn" id="tuF">°F</button>
+                  </div>
+                </div>
+
+                <div class="thermo-control">
+                  <label class="t-label" for="tMode">Mode</label>
+                  <select id="tMode" class="t-select">
+                    <option value="live" selected>
+                      Live sensor (simulated)
+                    </option>
+                    <option value="manual">Manual override</option>
+                  </select>
+                  <p class="t-hint">
+                    Manual mode lets you set temperature and humidity.
+                  </p>
+                </div>
+
+                <div class="thermo-control">
+                  <div class="t-row">
+                    <label class="t-label" for="tManualTemp">Manual Temp</label>
+                    <span class="t-mini" id="tManualTempLabel">22.0°C</span>
+                  </div>
+                  <input
+                    id="tManualTemp"
+                    class="t-range"
+                    type="range"
+                    min="0"
+                    max="50"
+                    step="0.1"
+                    value="22"
+                    disabled
+                  />
+                </div>
+
+                <div class="thermo-control">
+                  <div class="t-row">
+                    <label class="t-label" for="tManualHum"
+                      >Manual Humidity</label
+                    >
+                    <span class="t-mini" id="tManualHumLabel">45%</span>
+                  </div>
+                  <input
+                    id="tManualHum"
+                    class="t-range"
+                    type="range"
+                    min="10"
+                    max="90"
+                    step="1"
+                    value="45"
+                    disabled
+                  />
+                </div>
+
+                <hr class="t-divider" />
+
+                <div class="thermo-control">
+                  <div class="t-row">
+                    <label class="t-label" for="tMin">Min Temp Alert</label>
+                    <span class="t-mini" id="tMinLabel">18.0°C</span>
+                  </div>
+                  <input
+                    id="tMin"
+                    class="t-range"
+                    type="range"
+                    min="0"
+                    max="50"
+                    step="0.5"
+                    value="18"
+                  />
+                </div>
+
+                <div class="thermo-control">
+                  <div class="t-row">
+                    <label class="t-label" for="tMax">Max Temp Alert</label>
+                    <span class="t-mini" id="tMaxLabel">26.0°C</span>
+                  </div>
+                  <input
+                    id="tMax"
+                    class="t-range"
+                    type="range"
+                    min="0"
+                    max="50"
+                    step="0.5"
+                    value="26"
+                  />
+                </div>
+
+                <label class="t-check">
+                  <input type="checkbox" id="tSound" checked />
+                  <span>Sound notification</span>
+                </label>
+
+                <div class="t-buttons">
+                  <button
+                    class="btn btn-primary w-100 mb-2"
+                    type="button"
+                    id="tStart"
+                  >
+                    Start
+                  </button>
+                  <button
+                    class="btn btn-outline w-100 mb-2"
+                    type="button"
+                    id="tStop"
+                    disabled
+                  >
+                    Stop
+                  </button>
+                  <button
+                    class="btn btn-outline w-100"
+                    type="button"
+                    id="tReset"
+                  >
+                    Reset
+                  </button>
+                </div>
+
+                <div id="tAlertBox" class="t-alert" aria-live="polite">
+                  No alerts. Temperature is normal.
+                </div>
+              </div>
+            </div>
+
+            <!-- Display -->
+            <div class="col-lg-8">
+              <div class="thermo-board">
+                <div class="thermo-display">
+                  <div class="td-left">
+                    <div class="td-title">Live Reading</div>
+                    <div class="td-temp" id="tTemp">--.-</div>
+
+                    <div class="td-meta">
+                      <div class="td-item">
+                        <span class="td-label">Humidity</span>
+                        <span class="td-value" id="tHum">--%</span>
+                      </div>
+                      <div class="td-item">
+                        <span class="td-label">Feels like</span>
+                        <span class="td-value" id="tFeels">--.-</span>
+                      </div>
+                      <div class="td-item">
+                        <span class="td-label">Status</span>
+                        <span class="td-value" id="tStatus">Idle</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="td-right">
+                    <div class="t-gauge" aria-label="Temperature gauge">
+                      <div class="t-gauge-track"></div>
+                      <div class="t-gauge-fill" id="tGaugeFill"></div>
+                      <div
+                        class="t-gauge-marker"
+                        id="tGaugeMarker"
+                        aria-hidden="true"
+                      ></div>
+                      <div class="t-gauge-scale">
+                        <span id="tMinScale">0°C</span>
+                        <span id="tMaxScale">50°C</span>
+                      </div>
+                    </div>
+
+                    <div class="t-chart">
+                      <div class="t-chart-head">
+                        <span class="t-chart-title">Last 60 seconds</span>
+                        <span class="t-chart-note" id="tTrend"
+                          >Waiting for data…</span
+                        >
+                      </div>
+                      <canvas
+                        id="tCanvas"
+                        width="900"
+                        height="180"
+                        aria-label="Temperature chart"
+                      ></canvas>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
       <!-- Memory Game Section -->
       <section id="memory-game" class="memory-game section">
